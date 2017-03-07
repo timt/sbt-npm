@@ -1,4 +1,4 @@
-sbt-npm  [![Build Status](https://travis-ci.org/timt/sbt-npm.png?branch=master)](https://travis-ci.org/timt/sbt-npm) [ ![Download](https://api.bintray.com/packages/timt/repo/sbt-dist-zip/images/download.png) ](https://bintray.com/timt/repo/sbt-npm/_latestVersion)
+sbt-npm  [![Build Status](https://travis-ci.org/timt/sbt-npm.png?branch=master)](https://travis-ci.org/timt/sbt-npm) [ ![Download](https://api.bintray.com/packages/timt/repo/sbt-npm/images/download.png) ](https://bintray.com/timt/repo/sbt-npm/_latestVersion)
 ===========================================================================================================================================================================================================================================================================================
 A really simple sbt plugin that for running npm tasks as part of sbt build process
 
@@ -13,7 +13,7 @@ Installation
 Add the following lines to your projects.sbt
 
     //autoplugin
-    addSbtPlugin("io.shaka" % "sbt-npm" % "1")
+    addSbtPlugin("io.shaka" % "sbt-npm" % "2")
 
 Usage
 
@@ -32,5 +32,3 @@ Setting working directory for npm
 Code license
 ------------
 Apache License 2.0
-
-t
