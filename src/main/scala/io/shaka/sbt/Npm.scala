@@ -3,10 +3,12 @@ package io.shaka.sbt
 import sbt.Keys._
 import sbt._
 import sbt.complete.DefaultParsers._
+import sbt.plugins.JvmPlugin
 
 object Npm extends AutoPlugin{
 
   override def trigger = allRequirements
+  override def requires: Plugins = JvmPlugin
 
   object autoImport {
     val npmExec = settingKey[String](
@@ -14,57 +16,47 @@ object Npm extends AutoPlugin{
     val npmWorkingDir = settingKey[String](
       "sbt-npm working directory for running npm commands - '.'")
     val npm = inputKey[Unit]("Run an npm command")
+    val npmCompileCommands = settingKey[String]("sbt-npm npm commands to run during compile phase")
+    val npmTestCommands = settingKey[String]("sbt-npm npm commands to run during test phase")
+//    val npmPackageCommands = settingKey[String]("sbt-npm npm commands to run during package phase")
   }
 
   import autoImport._
 
+  def runNpm(exec: String, commands: Seq[String], workingDir: String, logger: Logger):Unit = {
+    val npmCommand = s"$exec ${commands.mkString(" ")}"
+    logger.info(s"Running '$npmCommand' in $workingDir")
+    val rc = Process(npmCommand, file(workingDir)).!
+    if (rc != 0) {
+      val errorMsg = s"$npmCommand returned non-zero return code: $rc"
+      logger.error(errorMsg)
+      sys.error(errorMsg)
+    }
+  }
+
+  def runNpm(exec: String, commands: String, workingDir: String, logger: Logger): Unit = runNpm(exec, commands.split(" "), workingDir, logger)
+
+
   override lazy val projectSettings = Seq(
     npmExec := "npm",
     npmWorkingDir := ".",
-    npm := {
-      // get the result of parsing
-      val args: Seq[String] = spaceDelimited("<arg>").parsed
-      val npmCommand = s"${npmExec.value} ${args.mkString(" ")}"
-      println(s"Running '$npmCommand' in ${npmWorkingDir.value}")
-      val rc = Process(npmCommand, file(npmWorkingDir.value)).!
-
-//      if (rc == 0) rc else sys.error(s"Grunt generated non-zero return code: $rc")
-
-      s"cd ${npmWorkingDir.value} && $npmCommand" !
+    npmCompileCommands :="",
+    npmTestCommands :="",
+//    npmPackageCommands :="",
+    npm := runNpm(npmExec.value, spaceDelimited("<arg>").parsed, npmWorkingDir.value, streams.value.log) ,
+    (compile in Compile) := {
+      if(npmCompileCommands.value != "") runNpm(npmExec.value, npmCompileCommands.value, npmWorkingDir.value, streams.value.log)
+      (compile in Compile).value
+    },
+    (test in Test) := {
+      if(npmTestCommands.value != "") runNpm(npmExec.value, npmTestCommands.value, npmWorkingDir.value, streams.value.log)
+      (test in Test).value
     }
-
-//    distZip := {
-//      val distFilesSrcDir = Keys.sourceDirectory.value / distZipScripts.value
-//      val targetDir = Keys.target.value
-//      val jar = distZipArtifactFile.value
-//      val distTarget = targetDir / "dist"
-//      val projectName = Keys.name.value
-//
-//      IO.copyDirectory(distFilesSrcDir, distTarget)
-//      IO.copyFile(jar, distTarget / s"${Keys.name.value}.jar")
-//      IO.zip(allSubpaths(distTarget), targetDir / s"$projectName.zip")
+//    , (Keys.`package` in (Compile, packageBin)) := {
+//      println("--- npm test")
+//      if(npmPackageCommands.value != "") println(s"npm commands + ${npmPackageCommands.value}" )
+//      (Keys.`package` in (Compile, packageBin)).value
 //    }
   )
-
-//  private def exec(
-//                    nodePath: String,
-//                    cmd: String,
-//                    args: Seq[String] = Seq(),
-//                    cwd: File = file("."),
-//                    s: Option[TaskStreams] = None): Int = {
-//
-//    val fullCmd = (Seq[String](nodePath, cmd) ++ args) filter {
-//      _.length > 0
-//    } mkString " "
-//
-//    s map { _stream =>
-//      _stream.log.info(s"Executing grunt-sbt command: $fullCmd")
-//      _stream.log.debug(s"Grunt cwd: $cwd")
-//    }
-//
-//    val rc = Process(fullCmd, cwd).!
-//
-//    if (rc == 0) rc else sys.error(s"Grunt generated non-zero return code: $rc")
-//  }
 
 }
