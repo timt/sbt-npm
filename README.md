@@ -13,21 +13,32 @@ Installation
 Add the following lines to your projects.sbt
 
     //autoplugin
-    addSbtPlugin("io.shaka" % "sbt-npm" % "3")
+    addSbtPlugin("io.shaka" % "sbt-npm" % "4")
 
 Usage
 
     sbt npm [some command]
 
-    e.g. sbt npm --version
+    e.g. sbt "npm --version"
+    or   sbt-prompt> npm --version
     
 This will run the command 'npm --version' in the project default working directory '.'
 
 Setting to specify location of the npm executable
+    
     npmExec := "/usr/local/bin/npm"
 
 Setting working directory for npm
+    
     npmWorkingDir := "src/main/elm"
+
+Setting npm commands to run as part of the compile phase
+    
+    npmCompileCommands := "run build"
+
+Setting npm commands to run as part of the compile phase
+    
+    npmTestCommands := "run test"
 
 Code license
 ------------
