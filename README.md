@@ -1,6 +1,6 @@
 sbt-npm  [![Build Status](https://travis-ci.org/timt/sbt-npm.png?branch=master)](https://travis-ci.org/timt/sbt-npm) [ ![Download](https://api.bintray.com/packages/timt/repo/sbt-npm/images/download.png) ](https://bintray.com/timt/repo/sbt-npm/_latestVersion)
 ===========================================================================================================================================================================================================================================================================================
-A really simple sbt plugin that for running npm (or yarn) tasks as part of sbt build process
+A really simple sbt plugin for running npm (or yarn) tasks as part of sbt build process
 
 Requirements
 ------------
@@ -10,10 +10,10 @@ Requirements
 Installation
 ------------
 
-Add the following lines to your projects.sbt
+Add the following lines to your plugins.sbt
 
     //autoplugin
-    addSbtPlugin("io.shaka" % "sbt-npm" % "7")
+    addSbtPlugin("io.shaka" % "sbt-npm" % "8")
 
 Usage
 
