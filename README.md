@@ -13,7 +13,7 @@ Installation
 Add the following lines to your projects.sbt
 
     //autoplugin
-    addSbtPlugin("io.shaka" % "sbt-npm" % "4")
+    addSbtPlugin("io.shaka" % "sbt-npm" % "5")
 
 Usage
 
@@ -39,6 +39,10 @@ Setting npm commands to run as part of the compile phase
 Setting npm commands to run as part of the compile phase
     
     npmTestCommands := "run test"
+
+Setting npm commands to run as part of the clean phase
+    
+    npmTestCommands := "run clean"
 
 Code license
 ------------

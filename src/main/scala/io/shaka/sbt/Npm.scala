@@ -18,6 +18,7 @@ object Npm extends AutoPlugin{
     val npm = inputKey[Unit]("Run an npm command")
     val npmCompileCommands = settingKey[String]("sbt-npm npm commands to run during compile phase")
     val npmTestCommands = settingKey[String]("sbt-npm npm commands to run during test phase")
+    val npmCleanCommands = settingKey[String]("sbt-npm npm commands to run during clean phase")
 //    val npmPackageCommands = settingKey[String]("sbt-npm npm commands to run during package phase")
   }
 
@@ -34,7 +35,7 @@ object Npm extends AutoPlugin{
     }
   }
 
-  def runNpm(exec: String, commands: String, workingDir: String, logger: Logger): Unit = runNpm(exec, commands.split(" "), workingDir, logger)
+  def runNpm(exec: String, commands: String, workingDir: String, logger: Logger): Unit = if(commands != "") runNpm(exec, commands.split(" "), workingDir, logger)
 
 
   override lazy val projectSettings = Seq(
@@ -45,12 +46,16 @@ object Npm extends AutoPlugin{
 //    npmPackageCommands :="",
     npm := runNpm(npmExec.value, spaceDelimited("<arg>").parsed, npmWorkingDir.value, streams.value.log) ,
     (compile in Compile) := {
-      if(npmCompileCommands.value != "") runNpm(npmExec.value, npmCompileCommands.value, npmWorkingDir.value, streams.value.log)
+      runNpm(npmExec.value, npmCompileCommands.value, npmWorkingDir.value, streams.value.log)
       (compile in Compile).value
     },
     (test in Test) := {
-      if(npmTestCommands.value != "") runNpm(npmExec.value, npmTestCommands.value, npmWorkingDir.value, streams.value.log)
+      runNpm(npmExec.value, npmTestCommands.value, npmWorkingDir.value, streams.value.log)
       (test in Test).value
+    },
+    clean := {
+      runNpm(npmExec.value, npmCleanCommands.value, npmWorkingDir.value, streams.value.log)
+      clean.value
     }
 //    , (Keys.`package` in (Compile, packageBin)) := {
 //      println("--- npm test")
