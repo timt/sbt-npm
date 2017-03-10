@@ -35,7 +35,7 @@ object Npm extends AutoPlugin{
     }
   }
 
-  def runNpm(exec: String, commands: String, workingDir: String, logger: Logger): Unit = if(commands != "") runNpm(exec, commands.split(" "), workingDir, logger)
+  def runNpm(exec: String, commands: String, workingDir: String, logger: Logger): Unit = runNpm(exec, commands.split(" "), workingDir, logger)
 
 
   override lazy val projectSettings = Seq(
@@ -43,6 +43,7 @@ object Npm extends AutoPlugin{
     npmWorkingDir := ".",
     npmCompileCommands :="",
     npmTestCommands :="",
+    npmCleanCommands :="",
 //    npmPackageCommands :="",
     npm := runNpm(npmExec.value, spaceDelimited("<arg>").parsed, npmWorkingDir.value, streams.value.log) ,
     (compile in Compile) := {

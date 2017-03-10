@@ -13,7 +13,7 @@ Installation
 Add the following lines to your projects.sbt
 
     //autoplugin
-    addSbtPlugin("io.shaka" % "sbt-npm" % "5")
+    addSbtPlugin("io.shaka" % "sbt-npm" % "6")
 
 Usage
 
